@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import Providers from "@/components/Providers";
-import NavBar from "@/components/NavBar";
+import Navigation from "@/components/Navigation";
 
 export const metadata: Metadata = {
   title: "Inventory",
@@ -13,7 +13,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
         <Providers>
-          <NavBar />
+          <Navigation />
           {children}
         </Providers>
       </body>

@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -13,37 +15,64 @@ export default function Login() {
 
     const formData = new FormData(e.currentTarget);
 
+    if (!formData.get("email") || !formData.get("password"))
+      return setError("Veuillez remplir tous les champs");
+
     const res = await signIn("credentials", {
       email: formData.get("email"),
       password: formData.get("password"),
       redirect: false,
     });
 
-    if (res?.error) return setError(res.error as string);
+    if (res?.error) return setError("Une erreur est survenue, veuillez réessayer plus tard");
 
-    if (res?.ok) return router.push("/dashboard/profile");
+    if (res?.ok) return router.push("/dashboard");
 
     console.log(res);
   };
 
   return (
-    <div className="justify-center h-[calc(100vh-4rem)] flex flex-row items-center">
-      <form onSubmit={handleSubmit} className="bg-neutral-950 px-8 py-10 w3/12 rounded-md">
-      {error && <div className="bg-red-500 text-white p-2 mb-2">{error}</div>}
-        <h1 className="text-4xl font-bold mb-7">Login</h1>
+    <div className="justify-center h-[calc(100vh)] flex flex-row items-center bg-[#FAFAFA]">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-[#FFFFFF] w-1/5 py-12 px-10 rounded-2xl shadow-md justify-center flex flex-col items-center"
+      >
+        <Link href="/">
+          <Image
+            src="/LogoInventorlyText.png"
+            alt="Logo"
+            width={170}
+            height={40}
+            className="cursor-pointer"
+          />
+        </Link>
+        <h1 className="text-md font-normal text-center my-4 text-[#101010]">
+          Bienvenue à nouveau ! 👋
+        </h1>
+        {error && (
+          <div className="bg-red-500 text-white px-2 mb-6 rounded-md w-full text-center py-3">
+            {error}
+          </div>
+        )}
         <input
           type="email"
-          placeholder="correo@correo.com"
+          placeholder="adresse@mail.com"
           name="email"
-          className="bg-zinc-800 px-6 py-2 block mb-4 w-full rounded-sm"
+          className="bg-[#FAFAFA] px-6 py-4 block mb-6 w-full rounded-lg text-[#101010]"
         />
         <input
           type="password"
           placeholder="*****"
           name="password"
-          className="bg-zinc-800 px-6 py-2 block mb-4 w-full rounded-sm"
+          className="bg-[#FAFAFA] px-6 py-4 block mb-12 w-full rounded-lg text-[#101010]"
         />
-        <button className="bg-indigo-500 px-4 py-2 w-full rounded-sm">Login</button>
+        <p className="text-gray-700 mb-4">
+          Vous n&apos;avez pas de compte ?{" "}
+          <Link href="/register" className="text-[#514BF3]">
+            S&apos;inscrire
+          </Link>
+        </p>
+        <button className="bg-[#514BF3] px-4 py-3 w-1/2 rounded-md text-white">Se connecter</button>
       </form>
     </div>
   );

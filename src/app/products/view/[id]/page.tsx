@@ -22,6 +22,8 @@ export default function EditProduct({ params }: { params: { id: string } }) {
     name: "",
     description: "",
     price: 0,
+    stock: 0,
+    categoryId: { name: "" },
     createdAt: "",
     updatedAt: "",
     __v: 0,
@@ -33,7 +35,7 @@ export default function EditProduct({ params }: { params: { id: string } }) {
         setData(data);
       })
       .catch((err) => {
-        console.log(err);
+        alert("Error fetching product");
       });
   }, [id]);
 
@@ -61,12 +63,16 @@ export default function EditProduct({ params }: { params: { id: string } }) {
     });
   };
 
+  console.log(data);
+
   return (
     <div className="justify-center h-[calc(100vh-4rem)] flex flex-col items-center">
       <div className="bg-[#FFFFFF] w-1/5 py-12 px-10 rounded-2xl shadow-md justify-center flex flex-col items-center">
         <h1 className="text-4xl font-bold mb-7">{data.name}</h1>
         <p>{data.description}</p>
-        <p>{data.price}</p>
+        <p>Prix: {data.price}€</p>
+        <p>Stock: {data.stock}</p>
+        {data.categoryId && <p>Catégorie: {data.categoryId.name}</p>}
         <button
           className="bg-red-500 px-4 py-2 rounded-md text-white mt-10"
           onClick={() => deleteProduct(data._id)}

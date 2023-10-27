@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 
@@ -16,6 +16,15 @@ const updateProduct = async (id: string, product: any) => {
   return data;
 };
 
+interface Category {
+  _id: string;
+  userId: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
 export default function EditProduct({ params }: { params: { id: string } }) {
   const { id } = params;
 
@@ -24,6 +33,23 @@ export default function EditProduct({ params }: { params: { id: string } }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
+  const [stock, setStock] = useState(0);
+  const [category, setCategory] = useState("");
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  // Fetch categories = user's categories
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get("/api/category");
+        setCategories(res.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     getProduct(id)
@@ -31,15 +57,18 @@ export default function EditProduct({ params }: { params: { id: string } }) {
         setTitle(data.name);
         setDescription(data.description);
         setPrice(data.price);
+        setStock(data.stock);
+        setCategory(data?.categoryId._id);
       })
       .catch((err) => {
         console.log(err);
       });
   }, [id]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      await updateProduct(id, { name: title, description, price });
+      await updateProduct(id, { name: title, description, price, stock, category });
       router.push("/products");
     } catch (err) {
       const { response } = err as AxiosError;
@@ -54,15 +83,15 @@ export default function EditProduct({ params }: { params: { id: string } }) {
       {error && <div className="bg-red-500 text-white p-2 mb-2">{error}</div>}
       <form
         onSubmit={handleSubmit}
-        className="bg-[#FFFFFF] w-1/5 py-12 px-10 rounded-2xl shadow-md justify-center flex flex-col items-center"
+        className="bg-[#FFFFFF] w-2/5 py-12 px-10 rounded-2xl shadow-md"
       >
-        <h1 className="text-4xl font-bold mb-7">Modifier produit {title}</h1>
+        <h1 className="text-4xl font-bold mb-7">Modifier un produit</h1>
         <input
           type="text"
           placeholder="Nom du produit"
           name="name"
-          onChange={(e) => setTitle(e.target.value)}
           value={title}
+          onChange={(e) => setTitle(e.target.value)}
           className="bg-[#FAFAFA] px-6 py-4 block mb-6 w-full rounded-lg text-[#101010]"
           required
         />
@@ -70,8 +99,8 @@ export default function EditProduct({ params }: { params: { id: string } }) {
           type="text"
           placeholder="Description du produit"
           name="description"
-          onChange={(e) => setDescription(e.target.value)}
           value={description}
+          onChange={(e) => setDescription(e.target.value)}
           className="bg-[#FAFAFA] px-6 py-4 block mb-6 w-full rounded-lg text-[#101010]"
           required
         />
@@ -79,14 +108,39 @@ export default function EditProduct({ params }: { params: { id: string } }) {
           type="number"
           placeholder="Prix"
           name="price"
-          onChange={(e) => setPrice(parseInt(e.target.value))}
           value={price}
+          onChange={(e) => setPrice(parseInt(e.target.value))}
           className="bg-[#FAFAFA] px-6 py-4 block mb-6 w-full rounded-lg text-[#101010]"
           required
         />
-        <button type="submit" className="bg-indigo-500 px-4 py-2 w-full rounded-md text-white">
-          Modifier
-        </button>
+        <input
+          type="number"
+          placeholder="Stock"
+          name="stock"
+          value={stock}
+          onChange={(e) => setStock(parseInt(e.target.value))}
+          className="bg-[#FAFAFA] px-6 py-4 block mb-6 w-full rounded-lg text-[#101010]"
+          required
+        />
+        <select
+          name="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="bg-[#FAFAFA] px-6 py-4 block mb-6 w-full rounded-lg text-[#101010]"
+        >
+          <option value="">Choisir une catégorie</option>
+          {categories.length > 0 &&
+            categories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
+            ))}
+
+          {categories.length > 0 && <option value="autre">Autre</option>}
+
+          {categories.length === 0 && <option value="0">Aucune catégorie trouvée</option>}
+        </select>
+        <button className="bg-indigo-500 px-4 py-2 w-full rounded-sm text-white">Modifier</button>
       </form>
     </div>
   );

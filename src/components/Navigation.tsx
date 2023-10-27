@@ -39,6 +39,11 @@ export default function Navigation() {
               <Link href="/about">About Us</Link>
             )}
           </li>
+          {session && status === "authenticated" && (
+            <li className="px-4 py-2">
+              <Link href="/category">Catégories</Link>
+            </li>
+          )}
           <li className="px-4 py-2">
             {session && status === "authenticated" ? (
               <Link href="/dashboard/profile">Profile</Link>

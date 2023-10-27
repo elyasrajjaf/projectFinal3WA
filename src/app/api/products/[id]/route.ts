@@ -8,7 +8,7 @@ export const GET = async (req: Request, res: NextResponse) => {
 
   try {
     await connectDB();
-    const product = await Product.findById(id);
+    const product = await Product.findById(id).populate("categoryId");
     return NextResponse.json(product, { status: 200 });
   } catch (error) {
     console.error(error);

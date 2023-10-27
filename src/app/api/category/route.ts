@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import User from "@/models/user";
-import Product from "@/models/products";
+import Category from "@/models/category";
 import { connectDB } from "@/libs/mongodb";
 import { getServerSession } from "next-auth";
 
@@ -24,12 +24,10 @@ export async function GET() {
       return NextResponse.redirect("http://localhost:3000/login");
     }
 
-    // Récupérez tous les produits de l'user
-    const products = await Product.find({ userId: userFound._id });
+    const categories = await Category.find({ userId: userFound._id });
 
-    return NextResponse.json(products, { status: 201 });
+    return NextResponse.json(categories, { status: 201 });
   } catch (error) {
-    console.log(error);
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
@@ -37,7 +35,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const { name, description, price, category, stock } = await request.json();
+  const { name } = await request.json();
 
   // Vérifiez si l'user est connecté
   const session = await getServerSession();
@@ -58,21 +56,14 @@ export async function POST(request: Request) {
       return NextResponse.redirect("http://localhost:3000/login");
     }
 
-    // Créez un nouveau produit
-    const newProduct = new Product({
-      userId: userFound._id,
+    const newCategory = new Category({
       name,
-      categoryId: category,
-      description,
-      stock,
-      price,
+      userId: userFound._id,
     });
+    const savedCategory = await newCategory.save();
 
-    const savedProduct = await newProduct.save();
-
-    return NextResponse.json(savedProduct, { status: 201 });
+    return NextResponse.json(savedCategory, { status: 201 });
   } catch (error) {
-    console.log(error);
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }

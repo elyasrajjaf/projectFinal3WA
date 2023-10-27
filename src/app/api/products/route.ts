@@ -29,7 +29,6 @@ export async function GET() {
 
     return NextResponse.json(products, { status: 201 });
   } catch (error) {
-    console.log(error);
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
@@ -72,7 +71,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(savedProduct, { status: 201 });
   } catch (error) {
-    console.log(error);
     if (error instanceof Error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }

@@ -27,7 +27,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(savedUser, { status: 201 });
   } catch (error) {
-    console.log(error);
     const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
     return NextResponse.json({ error: errorMessage }, { status: 400 });
   }

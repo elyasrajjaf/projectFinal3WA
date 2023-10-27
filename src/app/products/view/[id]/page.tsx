@@ -63,8 +63,6 @@ export default function EditProduct({ params }: { params: { id: string } }) {
     });
   };
 
-  console.log(data);
-
   return (
     <div className="justify-center h-[calc(100vh-4rem)] flex flex-col items-center">
       <div className="bg-[#FFFFFF] w-1/5 py-12 px-10 rounded-2xl shadow-md justify-center flex flex-col items-center">

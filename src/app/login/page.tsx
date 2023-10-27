@@ -27,8 +27,7 @@ export default function Login() {
     if (res?.error) return setError("Une erreur est survenue, veuillez réessayer plus tard");
 
     if (res?.ok) return router.push("/dashboard");
-
-    console.log(res);
+    
   };
 
   return (

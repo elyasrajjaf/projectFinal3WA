@@ -45,11 +45,9 @@ export default function ProductAdd() {
         category: formData.get("category"),
       });
 
-      console.log(res);
 
       if (res.status === 201) return router.push("/products");
     } catch (error) {
-      console.log(error);
       if (error instanceof AxiosError) {
         setError(error.response?.data.error);
       }

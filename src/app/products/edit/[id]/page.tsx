@@ -61,7 +61,10 @@ export default function EditProduct({ params }: { params: { id: string } }) {
         setCategory(data?.categoryId._id);
       })
       .catch((err) => {
-        console.log(err);
+        const { response } = err as AxiosError;
+        if (response) {
+          setError("Une erreur est survenue lors de la récupération du produit");
+        }
       });
   }, [id]);
 

@@ -34,7 +34,6 @@ export default function Register() {
 
       if (res?.ok) return router.push("/dashboard/profile");
     } catch (error) {
-      console.log(error);
       if (error instanceof AxiosError) {
         setError("Une erreur est survenue, veuillez réessayer plus tard");
       }
